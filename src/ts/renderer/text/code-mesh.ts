@@ -1,27 +1,31 @@
 import * as THREE from 'three';
 
+import BaseObj from './obj';
 import * as GC from './graphic-charactor';
 
-export default class CodeMesh {
+class CodeMesh extends BaseObj{
   private _code: number;
-  private _mesh: THREE.Mesh | null;
   private _materialId: number;
 
-  private static _textGeometryList: GC.GeometryList = new GC.GeometryList();
-  private static _materialList: THREE.Material[] = [
-    new THREE.MeshLambertMaterial({ color: '#fff', wireframe: true, }),
-    new THREE.MeshLambertMaterial({ color: '#f0f' }),
-    new THREE.MeshLambertMaterial({ color: '#f00' }),
-    new THREE.MeshLambertMaterial({ color: '#0ff' }),
-  ];
-
-  public static _scene: THREE.Scene = new THREE.Scene();
+  // public static _scene: THREE.Scene = new THREE.Scene();
+  static _textGeometryList: GC.GeometryList;
+  static _materialList: THREE.Material[];
 
   constructor(code?: string | number, materialId?: number) {
-      this._code = !code ? GC.ASCII_ENTER : ( typeof(code)==='number' ? code : code.charCodeAt(0) );
-      this._materialId = materialId ? materialId : 0;
-      this._mesh = null;
-      this.addMesh(this._code, this._materialId);
+    super();
+    this._code = !code ? GC.ASCII_ENTER : ( typeof(code)==='number' ? code : code.charCodeAt(0) );
+    this._materialId = materialId ? materialId : 0;
+    this.addMesh(this._code, this._materialId);
+  }
+  static initialize(scene: THREE.Scene) {
+    CodeMesh._scene = scene;
+    CodeMesh._textGeometryList = new GC.GeometryList();
+    CodeMesh._materialList = [
+      new THREE.MeshLambertMaterial({ color: '#fff', transparent: true, opacity: 1.0 }),
+      new THREE.MeshLambertMaterial({ color: '#f00', transparent: true, opacity: 1.0 }),
+      new THREE.MeshLambertMaterial({ color: '#0f0', transparent: true, opacity: 1.0 }),
+      new THREE.MeshLambertMaterial({ color: '#00f', transparent: true, opacity: 1.0 }),
+    ];
   }
 
   set code(code: number) {
@@ -40,33 +44,42 @@ export default class CodeMesh {
   set materialId(id: number) {
     if(this._materialId !== id) {
       this._materialId = id;
-      if(this._mesh) {
-        this._mesh.material = CodeMesh._materialList[this._materialId];
-        this._mesh.material.needsUpdate = true;
+      if(this.mesh) {
+        this.mesh.material = CodeMesh._materialList[this._materialId];
+        this.mesh.material.needsUpdate = true;
       }
     }
   }
-  set position(pos: THREE.Vector3) {
-    if(this._mesh) {
-      this._mesh.position.set(pos.x, pos.y, pos.z);
-    }
-  }
-  set x(x: number) { if(this._mesh) this._mesh.position.x = x; }
-  set y(y: number) { if(this._mesh) this._mesh.position.y = y; }
-  set z(z: number) { if(this._mesh) this._mesh.position.z = z; }
+  // get opacity(): number {
+  //   if(this._mesh) {
+  //     if(this._mesh.material instanceof Array) {
+  //       this._mesh.material = this._mesh.material[0];
+  //     }
+  //     return this._mesh.material.opacity;
+  //   } else {
+  //     return -1;
+  //   }
+  // }  set opacity(opacity: number) {
+  //   if(this._mesh) {
+  //     if(this._mesh.material instanceof Array) {
+  //       this._mesh.material = this._mesh.material[0];
+  //     }
+  //     this._mesh.material.opacity = opacity;
+  //   }
+  // }
 
   public removeMesh = () => {
-    if(this._mesh) {
-      CodeMesh._scene.remove(this._mesh);
-      this._mesh = null;
+    if(this.mesh) {
+      CodeMesh._scene.remove(this.mesh);
+      this.mesh = null;
     }
   }
-  public isExistMesh = (): boolean => { return this._mesh ? true : false; }
+  public isExistMesh = (): boolean => { return this.mesh ? true : false; }
   public isGraphicCharactorCode = (): boolean => { return GC.isGraphicCharactor(this._code); }
 
   private addMesh = (charCode: string | number, materialId?: number) => {
-    this._mesh = this.createMesh(charCode, materialId);
-    if(this._mesh) CodeMesh._scene.add(this._mesh);
+    this.mesh = this.createMesh(charCode, materialId);
+    if(this.mesh) CodeMesh._scene.add(this.mesh);
   }
   private createMesh = (charCode: string | number, materialId?: number): THREE.Mesh | null => {
     const code = typeof(charCode)==='number' ? charCode : charCode.charCodeAt(0);
@@ -80,3 +93,5 @@ export default class CodeMesh {
     }
   }
 }
+
+export default CodeMesh;

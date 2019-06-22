@@ -29,6 +29,8 @@ class TextScene implements IRenderScene {
     this._renderer.getSize(size);
     this._clock = clock ? clock : new THREE.Clock();
 
+    CodeMesh.initialize(new THREE.Scene());
+
     this._scene = CodeMesh._scene;
     console.log(this._scene);
     this._camera = new THREE.PerspectiveCamera(45, size.x / size.y, 0.1, 1000.0);
@@ -57,7 +59,11 @@ class TextScene implements IRenderScene {
   }
 
   public render = (target?: THREE.WebGLRenderTarget) => {
-    this.update();
+    CodeMesh._materialList.forEach(m => {
+      m.opacity = m.opacity*0.99;
+    });
+
+    this._cursor.update();
 
     this._renderer.setRenderTarget(target ? target : null);
     this._renderer.render(this._scene, this._camera);
@@ -72,12 +78,12 @@ class TextScene implements IRenderScene {
     switch (e.action) {
       case 'insert':
         this.insert(e.lines, e.start, e.end);
-        this._cursor.position = { row: e.end.row, column: e.end.column };
+        this._cursor.textPos = { row: e.end.row, column: e.end.column };
         this.check(e.start, e.end);
         break;
       case 'remove':
         this.remove(e.start, e.end);
-        this._cursor.position = { row: e.start.row, column: e.start.column };
+        this._cursor.textPos = { row: e.start.row, column: e.start.column };
         // check highlight
         this.check(e.start);
         break;
@@ -86,16 +92,16 @@ class TextScene implements IRenderScene {
     }
     // position reset
     this.resetPosition();
+    CodeMesh._materialList.forEach(m => {
+      m.opacity = 1;
+    });
   }
   public moveCursor(pos: AceAjax.Position) {
     console.log('moveCursor()');
-    this._cursor.position = pos;
+    this._cursor.textPos = pos;
     this._cursor.opacity = 1.0;
   }
 
-  private update = () => {
-    this._cursor.update();
-  }
   private insert = (lines: string[], start: AceAjax.Position, end: AceAjax.Position) => {
     // insert code and mesh
     let row = start.row;
@@ -230,6 +236,9 @@ class TextScene implements IRenderScene {
         }
       });
     });
+  }
+  private executeAllCodeMeshes = (f: (mesh: CodeMesh)=>any) => {
+    this._codeMeshes.forEach(line => { line.forEach(mesh => f(mesh)); });
   }
 }
 

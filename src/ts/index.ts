@@ -47,7 +47,7 @@ editor.addCommand([
   }
 ]);
 editor.addEvent('change', (e: AceAjax.EditorChangeEvent) => {
-  console.log('editor.change() ', e);
+  // console.log('editor.change() ', e);
   renderer.changeText(e, editor.value);
   // midi.send('loopMIDI Port', [0x90, 36, 0x3f]);
   // renderer.loadText(editor.line);
@@ -55,7 +55,7 @@ editor.addEvent('change', (e: AceAjax.EditorChangeEvent) => {
   // midi.send('loopMIDI Port', [0x80, 0x45, 0x3f]);
 });
 editor.addEvent('move', (e: any) => {
-  console.log('editor.move() ', e);
+  // console.log('editor.move() ', e);
   renderer.moveCursor(editor.cursor);
   // console.log('editor.move() ', e);
   // renderer.loadText(editor.line);
