@@ -1,13 +1,12 @@
 import * as THREE from 'three';
 
-import BaseObj from './obj';
+import BaseObj from './base-obj';
 import * as GC from './graphic-charactor';
 
 class CodeMesh extends BaseObj{
   private _code: number;
   private _materialId: number;
 
-  // public static _scene: THREE.Scene = new THREE.Scene();
   static _textGeometryList: GC.GeometryList;
   static _materialList: THREE.Material[];
 
@@ -21,10 +20,13 @@ class CodeMesh extends BaseObj{
     CodeMesh._scene = scene;
     CodeMesh._textGeometryList = new GC.GeometryList();
     CodeMesh._materialList = [
-      new THREE.MeshLambertMaterial({ color: '#fff', transparent: true, opacity: 1.0 }),
-      new THREE.MeshLambertMaterial({ color: '#f00', transparent: true, opacity: 1.0 }),
-      new THREE.MeshLambertMaterial({ color: '#0f0', transparent: true, opacity: 1.0 }),
-      new THREE.MeshLambertMaterial({ color: '#00f', transparent: true, opacity: 1.0 }),
+      new THREE.MeshLambertMaterial({ color: '#fff', transparent: true, opacity: 1.0, wireframe: true }),
+      new THREE.MeshLambertMaterial({ color: '#f00', transparent: true, opacity: 1.0, wireframe: true }),
+      new THREE.MeshLambertMaterial({ color: '#0f0', transparent: true, opacity: 1.0, wireframe: true }),
+      new THREE.MeshLambertMaterial({ color: '#00f', transparent: true, opacity: 1.0, wireframe: true }),
+      new THREE.MeshLambertMaterial({ color: '#ff0', transparent: true, opacity: 1.0, wireframe: true }),
+      new THREE.MeshLambertMaterial({ color: '#0ff', transparent: true, opacity: 1.0, wireframe: true }),
+      new THREE.MeshLambertMaterial({ color: '#f0f', transparent: true, opacity: 1.0, wireframe: true }),
     ];
   }
 
@@ -45,28 +47,11 @@ class CodeMesh extends BaseObj{
     if(this._materialId !== id) {
       this._materialId = id;
       if(this.mesh) {
-        this.mesh.material = CodeMesh._materialList[this._materialId];
-        this.mesh.material.needsUpdate = true;
+        this.material = CodeMesh._materialList[this._materialId];
+        this.material.needsUpdate = true;
       }
     }
   }
-  // get opacity(): number {
-  //   if(this._mesh) {
-  //     if(this._mesh.material instanceof Array) {
-  //       this._mesh.material = this._mesh.material[0];
-  //     }
-  //     return this._mesh.material.opacity;
-  //   } else {
-  //     return -1;
-  //   }
-  // }  set opacity(opacity: number) {
-  //   if(this._mesh) {
-  //     if(this._mesh.material instanceof Array) {
-  //       this._mesh.material = this._mesh.material[0];
-  //     }
-  //     this._mesh.material.opacity = opacity;
-  //   }
-  // }
 
   public removeMesh = () => {
     if(this.mesh) {

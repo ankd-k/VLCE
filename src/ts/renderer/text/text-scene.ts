@@ -2,10 +2,16 @@ import * as THREE from 'three';
 
 import {
   IRenderScene,
+} from '../constants';
+import {
   GLSLPrimitiveTypesRegExp,
+  GLSLPreprocessorRegExp,
+  GLSLQualifierRegExp,
   GLSLBuiltInVariablesRegExp,
   GLSLFunctionsRegExp,
-} from '../constants';
+  GLSLUserFuncitonRegExp,
+  checkLineSyntax,
+} from './syntax';
 
 import Cursor from './cursor';
 import CodeMesh from './code-mesh';
@@ -25,7 +31,7 @@ class TextScene implements IRenderScene {
 
   constructor(renderer: THREE.WebGLRenderer, clock?: THREE.Clock, initText?: string) {
     this._renderer = renderer;
-    let size: THREE.Vector2 = new THREE.Vector2();
+    const size: THREE.Vector2 = new THREE.Vector2();
     this._renderer.getSize(size);
     this._clock = clock ? clock : new THREE.Clock();
 
@@ -52,7 +58,7 @@ class TextScene implements IRenderScene {
     if (this._text.length > 0){
       const linesArray = this._text.split('\n');
       this.insert(linesArray, { row: 0, column: 0 }, {row: linesArray.length, column: linesArray[linesArray.length - 1].length});
-      // this.check({row: 0, column: 0},  {row: linesArray.length, column: linesArray[linesArray.length - 1].length});
+      this.check({row: 0, column: 0},  {row: linesArray.length, column: linesArray[linesArray.length - 1].length});
     }
 
     this.resetPosition();
@@ -100,6 +106,9 @@ class TextScene implements IRenderScene {
     console.log('moveCursor()');
     this._cursor.textPos = pos;
     this._cursor.opacity = 1.0;
+    CodeMesh._materialList.forEach(m => {
+      m.opacity = 1;
+    });
   }
 
   private insert = (lines: string[], start: AceAjax.Position, end: AceAjax.Position) => {
@@ -167,58 +176,14 @@ class TextScene implements IRenderScene {
     const textArray = this._text.split('\n');
     const endRow = (end) ? end.row : start.row;
     for(let row = start.row; row <= endRow; row++) {
-      //const initColumn: number = this._codeMeshes[row].findIndex(key => !key.isExistMesh() );
-      // const startColumn = this._meshes[row].indexOf(!null);
       const line: string = textArray[row];
       if(!line) continue;
-      console.log('TextScene.check() : line=', line);//, ', initColumn=', initColumn);
-
+      // console.log('TextScene.check() : line='+'"'+line+'"');
       // syntax check
-      let res;
-      while(res = GLSLPrimitiveTypesRegExp.exec(line)) {
-        console.log('primitive type : ', res, res.index);
-      }
-      while(res = GLSLBuiltInVariablesRegExp.exec(line)) {
-        console.log('built-in variables : ', res);
-      }
-      while(res = GLSLFunctionsRegExp.exec(line)) {
-        console.log('functions : ', res);
-      }
-      // console.log(
-      //   'typesRegexp.exec(line)=', GLSLPrimitiveTypesRegExp.exec(line),
-      //   '\nvariablesRegexp.exec(line)=', GLSLBuiltInVariablesRegExp.exec(line),
-      //   '\nfunctionRegexp.exec(line)=', GLSLFunctionsRegExp.exec(line)
-      // );
-
-
-      // syntax highlight (legacy)
-      // const words = line.split(/[\s.,(){}]/);
-      // words.forEach(word => {
-      //   // get materialId
-      //   if (!word) return;
-      //   let materialId: number = 0;
-      //   if(GLSLPrimitiveTypes.find(key => key === word)) materialId = 1;
-      //   else if(GLSLBuiltInVariables.find(key => key === word)) materialId = 2;
-      //   else if(GLSLFunctions.find(key => key === word)) materialId = 3;
-      //   console.log('TextScene.check() : word=', word, ', materialId=', materialId);
-      //   // set materialId
-      //   const l = word.length;
-      //   const regexp = new RegExp(word, 'g');
-      //   const index = line.match(regexp);
-      //   console.log('regexp maching index=', index);
-      //   const startColumn = initColumn + line.indexOf(word);
-      //   const endColumn = startColumn + l;
-      //   for(let column = startColumn; column < endColumn;column++) {
-      //     if(materialId !== this._materialIds[row][column] ) {
-      //       this._materialIds[row][column] = materialId;
-      //       const mesh = this._meshes[row][column];
-      //       if(mesh) {
-      //         mesh.material = this._materialList[materialId];
-      //         mesh.material.needsUpdate = true;
-      //       }
-      //     }
-      //   }
-      // });
+      const tmpMaterialIds = checkLineSyntax(line);
+      tmpMaterialIds.forEach((id, column) => {
+        this._codeMeshes[row][column].materialId = id;
+      });
     }
   }
 

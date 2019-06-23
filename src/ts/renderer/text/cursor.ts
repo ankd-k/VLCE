@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import BaseObj from './obj';
+import BaseObj from './base-obj';
 
 class Cursor extends BaseObj{
   private _textPos: AceAjax.Position;
