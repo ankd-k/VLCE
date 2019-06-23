@@ -164,27 +164,25 @@ class TextScene implements IRenderScene {
 
   private check = (start: AceAjax.Position, end?: AceAjax.Position) => {
     // regexp
-    const endRow = (end) ? end.row : start.row;
     const textArray = this._text.split('\n');
-    console.log('TextScene.check() : textArray=', textArray);
+    const endRow = (end) ? end.row : start.row;
     for(let row = start.row; row <= endRow; row++) {
-      const initColumn: number = this._codeMeshes[row].findIndex(key => !key.isExistMesh() );
+      //const initColumn: number = this._codeMeshes[row].findIndex(key => !key.isExistMesh() );
       // const startColumn = this._meshes[row].indexOf(!null);
       const line: string = textArray[row];
       if(!line) continue;
-      console.log('TextScene.check() : line=', line, ', initColumn=', initColumn);
+      console.log('TextScene.check() : line=', line);//, ', initColumn=', initColumn);
 
       // syntax check
-      console.log(GLSLPrimitiveTypesRegExp);
       let res;
       while(res = GLSLPrimitiveTypesRegExp.exec(line)) {
-        console.log(res);
+        console.log('primitive type : ', res, res.index);
+      }
+      while(res = GLSLBuiltInVariablesRegExp.exec(line)) {
+        console.log('built-in variables : ', res);
       }
       while(res = GLSLFunctionsRegExp.exec(line)) {
-        console.log(res);
-      }
-      while(res = GLSLPrimitiveTypesRegExp.exec(line)) {
-        console.log(res);
+        console.log('functions : ', res);
       }
       // console.log(
       //   'typesRegexp.exec(line)=', GLSLPrimitiveTypesRegExp.exec(line),
