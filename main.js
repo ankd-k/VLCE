@@ -7,12 +7,13 @@ function createWindow() {
     width: 1280,
     height: 720,
     // fullscreen: true,
-    // frame: false,
+    frame: false,
     useContentSize: true,
     webPreferences: {
       nodeIntegration: true,
     },
   });
+  // win.setMenu(null);
   win.loadFile('index.html');
   if(process.argv.find((arg)=>arg==='--debug')){
     win.webContents.openDevTools();
