@@ -1,3 +1,5 @@
+import { ipcRenderer } from 'electron';
+
 import TextEditor from './editor';
 import Renderer from './renderer';
 
@@ -49,6 +51,15 @@ editor.addCommand([
 editor.addEvent('change', (e: AceAjax.EditorChangeEvent) => {
   // console.log('editor.change() ', e);
   renderer.changeText(e, editor.value);
+
+  // osc send
+  let array: string[] = [];
+  array.push(editor.value);// , e.action, e.start.row.toString(), e.start.column.toString(), e.end.row.toString(), e.end.column.toString()
+  // e.lines.forEach(line => {
+  //   array.push(line);
+  // });
+  ipcRenderer.send('client', array);
+
   // midi.send('loopMIDI Port', [0x90, 36, 0x3f]);
   // renderer.loadText(editor.line);
   // const note = 36+Math.random();

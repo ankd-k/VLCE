@@ -6,6 +6,7 @@ import 'ace-builds/src-noconflict/mode-glsl';
 import 'ace-builds/src-noconflict/theme-origin';
 import 'ace-builds/src-noconflict/theme-monokai';
 
+
 export default class TextEditor {
   private _editor: ace.Ace.Editor;
   private _currentPath: string;
