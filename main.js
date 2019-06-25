@@ -13,7 +13,7 @@ let clientPort = null;
 let oscServer = null;
 let serverPort = null;
 // ip, port規定値
-const defaultIP = '192.168.1.212';
+const defaultIP = '127.0.0.1';
 const defaultPort = '9000';
 
 load();
@@ -152,12 +152,13 @@ function createClient() {
 	electron.ipcMain.on("client", (ipcRenderer, param) => {
     // console.log('ipcMain client, param =', param, ',\n param type=', typeof(param));
 		// let args = param.split(" ");
-		let sendMsg = new osc.Message('/textaction');
+		let sendMsg = new osc.Message('/text');
 		// // 引数のキャストは、アプリに応じて調整
     param.forEach(value => {
       sendMsg.append(value);
     });
 
-		console.log(oscClient.send(sendMsg));
+		oscClient.send(sendMsg);
+    console.log('osc send :', sendMsg);
 	});
 }
