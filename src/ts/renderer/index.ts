@@ -3,11 +3,11 @@ import * as THREE from 'three';
 import TextScene from './text/text-scene';
 import ShaderScene from './shader/shader-scene';
 
-import {
-  DEFAULT_FRAGMENT_SHADER,
-  DEFAULT_VERTEX_SHADER,
-  // IRenderScene,
-} from './shader/constants';
+// import {
+//   DEFAULT_FRAGMENT_SHADER,
+//   DEFAULT_VERTEX_SHADER,
+//   // IRenderScene,
+// } from './shader/constants';
 
 
 export default class MainRenderer {
@@ -25,6 +25,9 @@ export default class MainRenderer {
   private _plane: THREE.PlaneBufferGeometry;
   private _material: THREE.ShaderMaterial;
   private _mesh: THREE.Mesh;
+
+  private _frameIndex: number;
+  private _fps: number;
 
   constructor(id: string, initText?: string) {
     // init renderer and canvas
@@ -98,11 +101,15 @@ export default class MainRenderer {
     });
     this._mesh = new THREE.Mesh(this._plane, this._material);
     this._scene.add(this._mesh);
+
+    this._frameIndex = 0;
+    this._fps = 60;
   }
 
   public play = () => {
     console.log('renderer play.');
     this._clock.start();
+    this._frameIndex = 0;
     this.animate();
   }
   public resize = (width: number, height: number) => {
@@ -130,16 +137,19 @@ export default class MainRenderer {
   // rendering loop
   private animate = () => {
     requestAnimationFrame(this.animate);
+    this._frameIndex++;
+
     // update param
     // render
-    this.render();
+    if(this._frameIndex%1==0) {
+      this.render();
+    }
   }
   private render = () => {
     if (!this._renderer) { return; }
     // render some scene
-    // this._textScene.render();
+
     this._textScene.render(this._targets[0]);
-    // this._shaderScene.render();
     this._shaderScene.render(this._targets[1]);
     this._renderer.setRenderTarget(null);
     this._renderer.render(this._scene, this._camera);

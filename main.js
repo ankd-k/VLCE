@@ -13,7 +13,7 @@ let clientPort = null;
 let oscServer = null;
 let serverPort = null;
 // ip, port規定値
-const defaultIP = '127.0.0.1';
+const defaultIP = '192.168.1.173';
 const defaultPort = '9000';
 
 load();
@@ -159,6 +159,6 @@ function createClient() {
     });
 
 		oscClient.send(sendMsg);
-    console.log('osc send :', sendMsg);
+    // console.log('osc send :', sendMsg);
 	});
 }

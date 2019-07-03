@@ -9,11 +9,20 @@ import 'ace-builds/src-noconflict/theme-monokai';
 
 export default class TextEditor {
   private _editor: ace.Ace.Editor;
+  private _element: HTMLElement;
   private _currentPath: string;
 
-  constructor(domId: string) {
-    this._editor = ace.edit(domId);
+  constructor(el: string | HTMLElement) {
+    let element = (typeof(el)=='string') ? document.getElementById(el) : el;
+    if(!element) {
+      console.error('element is not exist.', element);
+      element = document.createElement('div');
+      document.appendChild(element);
+    }
+    this._element = element;
+    this._editor = ace.edit(this._element);
     this._currentPath = '';
+
     this.fontSize = 18;
     this.mode = 'ace/mode/glsl';
     this.theme = 'ace/theme/origin';
@@ -22,46 +31,25 @@ export default class TextEditor {
     this._editor.focus();
   }
 
-  get value(): string {
-    return this._editor.getValue();
-  }
-  set value(value: string) {
-    this._editor.setValue(value);
-  }
-
-  get line(): string {
-    const row = this._editor.getCursorPosition().row;
-    return this._editor.getSession().getLine(row);
-  }
-
-  get cursor(): {row: number, column: number} {
-    return this._editor.getSelection().getCursor();
-  }
-
-  set fontSize(fontSize: number | string) {
-    const fs: string = (typeof fontSize === 'number') ? fontSize.toString() : fontSize;
-    this._editor.setFontSize( fs + 'px' );
-  }
-
-  set mode(mode: string) {
-    this._editor.getSession().setMode(mode);
-  }
-
-  set theme(theme: string) {
-    this._editor.setTheme(theme);
-  }
-
-  set tabSize(tabSize: number) {
-    this._editor.getSession().setTabSize(tabSize);
-  }
-
+  // getter
+  get editor(): ace.Ace.Editor { return this._editor;}
+  get value(): string { return this._editor.getValue(); }
+  get line(): string { return this._editor.getSession().getLine(this._editor.getCursorPosition().row); }
+  get cursor(): {row: number, column: number} { return this._editor.getSelection().getCursor(); }
   public getLines = (start: number, end?: number) => {
-    if(!end) {
-      return this._editor.getSession().getLine(start);
-    } else {
-      return this._editor.getSession().getLines(start, end);
-    }
+    if(!end) return this._editor.getSession().getLine(start);
+    else return this._editor.getSession().getLines(start, end);
   }
+  get opacity(): number { return this._element.style.opacity ? parseFloat(this._element.style.opacity) : -1; }
+
+  // setter
+  set value(value: string) { this._editor.setValue(value); }
+  set fontSize(fontSize: number | string) { this._editor.setFontSize( ((typeof fontSize === 'number') ? fontSize.toString() : fontSize) + 'px' ); }
+  set mode(mode: string) { this._editor.getSession().setMode(mode); }
+  set theme(theme: string) { this._editor.setTheme(theme); }
+  set tabSize(tabSize: number) { this._editor.getSession().setTabSize(tabSize); }
+  set opacity(opacity: number) { this._element.style.opacity = opacity.toString(); }
+
   public addCommand(newCommands: {name: string, key: {win: string, mac: string}, func: () => void}[] ) {
     newCommands.forEach(command => {
       this._editor.commands.addCommand({

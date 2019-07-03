@@ -4,24 +4,17 @@ import {
   IRenderScene,
 } from '../constants';
 import {
-  GLSLPrimitiveTypesRegExp,
-  GLSLPreprocessorRegExp,
-  GLSLQualifierRegExp,
-  GLSLBuiltInVariablesRegExp,
-  GLSLFunctionsRegExp,
-  GLSLUserFuncitonRegExp,
   checkLineSyntax,
 } from './syntax';
 
 import Cursor from './cursor';
 import CodeMesh from './code-mesh';
-import * as GC from './graphic-charactor';
 
 class TextScene implements IRenderScene {
   private _renderer: THREE.WebGLRenderer;
   _scene : THREE.Scene;
   _camera : THREE.PerspectiveCamera;
-  private _clock: THREE.Clock;
+  // private _clock: THREE.Clock;
 
   private _text: string;
 
@@ -33,7 +26,7 @@ class TextScene implements IRenderScene {
     this._renderer = renderer;
     const size: THREE.Vector2 = new THREE.Vector2();
     this._renderer.getSize(size);
-    this._clock = clock ? clock : new THREE.Clock();
+    // this._clock = clock ? clock : new THREE.Clock();
 
     CodeMesh.initialize(new THREE.Scene());
 

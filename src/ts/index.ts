@@ -55,13 +55,8 @@ editor.addEvent('change', (e: AceAjax.EditorChangeEvent) => {
   // osc send
   let array: string[] = [];
   array.push(editor.value);// , e.action, e.start.row.toString(), e.start.column.toString(), e.end.row.toString(), e.end.column.toString()
-  // e.lines.forEach(line => {
-  //   array.push(line);
-  // });
   ipcRenderer.send('client', array);
-
   // midi.send('loopMIDI Port', [0x90, 36, 0x3f]);
-  // renderer.loadText(editor.line);
   // const note = 36+Math.random();
   // midi.send('loopMIDI Port', [0x80, 0x45, 0x3f]);
 });
