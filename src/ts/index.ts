@@ -17,12 +17,11 @@ const renderer = new Renderer('renderer', editor.value);
 // midi
 const midi = new MIDI();
 midi.request();
-console.log(midi.outputDevices);
+// console.log(midi.outputDevices);
 
 window.addEventListener('resize', () => {
   renderer.resize(window.innerWidth, window.innerHeight);
 });
-
 
 // set events
 editor.addCommand([
@@ -56,6 +55,7 @@ editor.addEvent('change', (e: AceAjax.EditorChangeEvent) => {
   let array: string[] = [];
   array.push(editor.value);// , e.action, e.start.row.toString(), e.start.column.toString(), e.end.row.toString(), e.end.column.toString()
   ipcRenderer.send('client', array);
+
   // midi.send('loopMIDI Port', [0x90, 36, 0x3f]);
   // const note = 36+Math.random();
   // midi.send('loopMIDI Port', [0x80, 0x45, 0x3f]);

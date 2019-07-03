@@ -9,14 +9,16 @@ const osc = require('node-osc');
 let oscClient = null;
 let clientIP = null;
 let clientPort = null;
-// OSC受信PORT
 let oscServer = null;
+let serverIP = null;
 let serverPort = null;
 // ip, port規定値
-const defaultIP = '192.168.1.173';
+const defaultIP = '127.0.0.1';
 const defaultPort = '9000';
 
 load();
+
+
 /*--------------------------------------------------------------------------
 	@load 初期化処理
 --------------------------------------------------------------------------*/
@@ -45,8 +47,7 @@ function setup() {
       openWindow();
     }
   });
-  //
-  // openWindow();
+
   console.log('setup done');
 }
 /*--------------------------------------------------------------------------
@@ -71,7 +72,6 @@ function openWindow() {
   win.loadFile('index.html');
 
   win.on('closed', ()=>{
-    console.log('winon event closed');
     closeWindow();
   });
 
@@ -85,15 +85,7 @@ function openWindow() {
 --------------------------------------------------------------------------*/
 function closeWindow() {
   console.log('close window');
-  console.log('kill osc');
-	if (oscServer) {
-    oscServer.close();
-    oscServer = null;
-  }
-	if (oscClient) {
-    oscClient.close();
-    oscClient = null;
-  }
+  closeOSC();
 
   console.log('clear session');
 	electron.session.defaultSession.clearCache(() => { })
@@ -110,21 +102,36 @@ function closeWindow() {
 
 
 /*--------------------------------------------------------------------------
-	@setup OSCのセットアップ
+	@setupOSC OSCのセットアップ
 --------------------------------------------------------------------------*/
 function setupOSC() {
-  clientIP = defaultIP;
-  clientPort = defaultPort;
-  // create
-  createServer();
-  createClient();
+  console.log('setupOSC()')
+  createServer('0.0.0.0', defaultPort);
+  createClient(defaultIP, defaultPort);
+}
+/*--------------------------------------------------------------------------
+	@setup OSCのセットアップ
+--------------------------------------------------------------------------*/
+function closeOSC() {
+  console.log('closeOSC()');
+	if (oscServer) {
+    oscServer.close();
+    oscServer = null;
+  }
+	if (oscClient) {
+    oscClient.close();
+    oscClient = null;
+  }
 }
 /*--------------------------------------------------------------------------
 	@createServer OSC受信
 --------------------------------------------------------------------------*/
-function createServer() {
-	oscServer = new osc.Server(serverPort);
-	// # OSC受信
+function createServer(ip, port) {
+  console.log('createServer(), IP=', ip, ', Port=', port);
+  serverIP = ip;
+  serverPort = port;
+	oscServer = new osc.Server(serverPort, serverIP);
+
 	// レンダープロセスからIPC通信を受け取る
 	electron.ipcMain.on("renderer", (ipcRenderer, param) => {
 		// IPC通信疎通確認
@@ -143,22 +150,18 @@ function createServer() {
 /*--------------------------------------------------------------------------
 	@createClient OSC送信
 --------------------------------------------------------------------------*/
-function createClient() {
-	// OSCクライアント（送信先IP, 送信先ポート）
+function createClient(ip, port) {
+  console.log('createClient(), IP=', ip, ', Port=', port);
+  clientIP = ip;
+  clientPort = port;
 	oscClient = new osc.Client(clientIP, clientPort);
-  console.log('oscClient =', oscClient);
 
 	// IPC通信でレンダープロセスから受け取ったメッセージをOSCフォーマットに変換して送信
 	electron.ipcMain.on("client", (ipcRenderer, param) => {
-    // console.log('ipcMain client, param =', param, ',\n param type=', typeof(param));
-		// let args = param.split(" ");
 		let sendMsg = new osc.Message('/text');
-		// // 引数のキャストは、アプリに応じて調整
     param.forEach(value => {
       sendMsg.append(value);
     });
-
 		oscClient.send(sendMsg);
-    // console.log('osc send :', sendMsg);
 	});
 }
