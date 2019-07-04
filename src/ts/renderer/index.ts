@@ -49,7 +49,7 @@ export default class MainRenderer {
 
     this._clock = new THREE.Clock();
 
-    this._textScene = new TextScene(this._renderer, this._clock, initText);// DEFAULT_FRAGMENT_SHADER
+    this._textScene = new TextScene(this._renderer, this._clock, initText); // DEFAULT_FRAGMENT_SHADER
     this._shaderScene = new ShaderScene(this._renderer, this._clock, initText);
 
     this._targets = [
@@ -141,7 +141,7 @@ export default class MainRenderer {
 
     // update param
     // render
-    if(this._frameIndex%1==0) {
+    if (this._frameIndex % 1 == 0) {
       this.render();
     }
   }
