@@ -14,15 +14,12 @@ export default class MIDI {
       inputs: [],
       outputs: [],
     };
-    console.log('midiDevices ', this.midiDevices);
+    this.request();
+    // console.log('midiDevices ', this.midiDevices);
   }
 
-  get inputDevices(): IMIDIDevice[] {
-    return this.midiDevices.inputs;
-  }
-  get outputDevices(): IMIDIDevice[] {
-    return this.midiDevices.outputs;
-  }
+  get inputDevices(): IMIDIDevice[] { return this.midiDevices.inputs; }
+  get outputDevices(): IMIDIDevice[] { return this.midiDevices.outputs; }
 
   public request() {
     if (navigator.requestMIDIAccess) {
@@ -34,9 +31,9 @@ export default class MIDI {
   }
   public send(name: string, message: number[], timeOffset?: number) {
     console.log('midi.send()');
-    const out = this.outputDevices.find(o => o.name === name);
-    if (out) {
-      out.value.send(message);
+    const od = this.outputDevices.find(o => o.name === name);
+    if (od) {
+      od.value.send(message);
     } else {
       console.error('device "' + name + '" is not exist.');
     }

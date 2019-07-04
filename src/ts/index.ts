@@ -15,8 +15,8 @@ editor.value = DEFAULT_FRAGMENT_SHADER;
 // renderer
 const renderer = new Renderer('renderer', editor.value);
 // midi
-const midi = new MIDI();
-midi.request();
+// const midi = new MIDI();
+// midi.request();
 // console.log(midi.outputDevices);
 
 window.addEventListener('resize', () => {
@@ -38,12 +38,12 @@ editor.addCommand([
     key: {win: 'Ctrl-E', mac: 'Command-E'},
     func: () => {
       console.log('toggle editor');
-      const editorElm = document.getElementById('editor');
-      // console.log(editorElm);
-      if(editorElm) {
-        const currentOpacity = editorElm.style.opacity;
-        editorElm.style.opacity = currentOpacity==='0' ? '1' : '0';
-      }
+      editor.opacity = editor.opacity===0 ? 1 : 0;
+      // const editorElm = document.getElementById('editor');
+      // if(editorElm) {
+      //   const currentOpacity = editorElm.style.opacity;
+      //   editorElm.style.opacity = currentOpacity==='0' ? '1' : '0';
+      // }
     }
   }
 ]);

@@ -20,12 +20,12 @@ export interface IUniforms {
   [key: string]: {
     type: string;
     value: any;
-  }
+  };
 }
 export const initUniforms: IUniforms = THREE.UniformsUtils.merge([
   {
-    time: { type: 'f', value: 0.0 },
     resolution: { type: 'v2', value: new THREE.Vector2() },
+    time: { type: 'f', value: 0.0 },
   },
   THREE.UniformsLib.common,
 ]);

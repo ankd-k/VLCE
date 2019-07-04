@@ -1,32 +1,27 @@
 import * as THREE from 'three';
 
-import {
-  IRenderScene,
-} from '../constants';
-import {
-  checkLineSyntax,
-} from './syntax';
-
-import Cursor from './cursor';
 import CodeMesh from './code-mesh';
+import Cursor from './cursor';
+
+import { IRenderScene } from '../constants';
+import { checkLineSyntax } from './syntax';
+
 
 class TextScene implements IRenderScene {
   private _renderer: THREE.WebGLRenderer;
   _scene : THREE.Scene;
   _camera : THREE.PerspectiveCamera;
-  // private _clock: THREE.Clock;
+  private _clock: THREE.Clock;
 
   private _text: string;
-
   private _codeMeshes: CodeMesh[][];
-
   private _cursor: Cursor;
 
   constructor(renderer: THREE.WebGLRenderer, clock?: THREE.Clock, initText?: string) {
     this._renderer = renderer;
     const size: THREE.Vector2 = new THREE.Vector2();
     this._renderer.getSize(size);
-    // this._clock = clock ? clock : new THREE.Clock();
+    this._clock = clock ? clock : new THREE.Clock();
 
     CodeMesh.initialize(new THREE.Scene());
 
@@ -58,8 +53,8 @@ class TextScene implements IRenderScene {
   }
 
   public render = (target?: THREE.WebGLRenderTarget) => {
-    CodeMesh._materialList.forEach(m => {
-      m.opacity = m.opacity*0.99;
+    CodeMesh._materialList.forEach((m) => {
+      m.opacity = m.opacity * 0.99;
     });
 
     this._cursor.update();
@@ -91,7 +86,7 @@ class TextScene implements IRenderScene {
     }
     // position reset
     this.resetPosition();
-    CodeMesh._materialList.forEach(m => {
+    CodeMesh._materialList.forEach((m) => {
       m.opacity = 1;
     });
   }
@@ -99,7 +94,7 @@ class TextScene implements IRenderScene {
     console.log('moveCursor()');
     this._cursor.textPos = pos;
     this._cursor.opacity = 1.0;
-    CodeMesh._materialList.forEach(m => {
+    CodeMesh._materialList.forEach((m) => {
       m.opacity = 1;
     });
   }
@@ -108,9 +103,9 @@ class TextScene implements IRenderScene {
     // insert code and mesh
     let row = start.row;
     let column = start.column;
-    lines.forEach(line => {
+    lines.forEach((line) => {
       const lineArray = line.split('');
-      lineArray.forEach(char => {
+      lineArray.forEach((char) => {
         const code: number = char.charCodeAt(0);
         this._codeMeshes[row].splice(column, 0, new CodeMesh(code));
 
@@ -168,9 +163,9 @@ class TextScene implements IRenderScene {
     // regexp
     const textArray = this._text.split('\n');
     const endRow = (end) ? end.row : start.row;
-    for(let row = start.row; row <= endRow; row++) {
+    for (let row = start.row; row <= endRow; row++) {
       const line: string = textArray[row];
-      if(!line) continue;
+      if (!line) continue;
       // console.log('TextScene.check() : line='+'"'+line+'"');
       // syntax check
       const tmpMaterialIds = checkLineSyntax(line);
@@ -180,11 +175,10 @@ class TextScene implements IRenderScene {
     }
   }
 
-
   private resetPosition(start?: AceAjax.Position) {
     const startRow = start ? start.row : 0;
     this._codeMeshes.forEach((line, row) => {
-      if(row<startRow) return;
+      if (row < startRow) return;
       line.forEach((codeMesh, column) => {
         if (codeMesh.isExistMesh()) {
           codeMesh.x = column;
@@ -193,8 +187,8 @@ class TextScene implements IRenderScene {
       });
     });
   }
-  private executeAllCodeMeshes = (f: (mesh: CodeMesh)=>any) => {
-    this._codeMeshes.forEach(line => { line.forEach(mesh => f(mesh)); });
+  private executeAllCodeMeshes = (f: (mesh: CodeMesh) => any) => {
+    this._codeMeshes.forEach((line) => { line.forEach((mesh) => f(mesh)); });
   }
 }
 

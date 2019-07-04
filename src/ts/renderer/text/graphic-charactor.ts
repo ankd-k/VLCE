@@ -12,26 +12,26 @@ export const ASCII_START: number = 0x00;
 export const ASCII_END: number = 0x7f;
 
 export const isASCII = (code: string | number): boolean => {
-  const c = typeof(code)==='number' ? code : code.charCodeAt(0);
+  const c = typeof(code) === 'number' ? code : code.charCodeAt(0);
   return ASCII_START <= c && c <= ASCII_END;
 }
 export const isGraphicCharactor = (code : string | number ): boolean => {
-  if(typeof(code)==='number') {
-    return (ASCII_GRAPHIC_CHARACTOR_START<=code && code<=ASCII_GRAPHIC_CHARACTOR_END);
+  if (typeof(code) === 'number') {
+    return (ASCII_GRAPHIC_CHARACTOR_START <= code && code <= ASCII_GRAPHIC_CHARACTOR_END);
   } else {
     const array = code.split('');
-    return !array.find(c => {
+    return !array.find((c) => {
       const charCode = c.charCodeAt(0) ;
-      return (charCode<ASCII_GRAPHIC_CHARACTOR_START || ASCII_GRAPHIC_CHARACTOR_END<charCode);
+      return (charCode < ASCII_GRAPHIC_CHARACTOR_START || ASCII_GRAPHIC_CHARACTOR_END < charCode);
     });
   }
 }
 
 export const getGraphicCharactorCode = (code: string | number): number => {
   let charCode: number;
-  if(typeof(code)==='number') charCode = code;
+  if (typeof(code) === 'number') charCode = code;
   else {
-    if(code.length!==1) {
+    if (code.length !== 1) {
       console.error('getGraphicCharCode() : code is not number of char.');
       return -1;
     }

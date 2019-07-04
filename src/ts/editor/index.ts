@@ -13,8 +13,8 @@ export default class TextEditor {
   private _currentPath: string;
 
   constructor(el: string | HTMLElement) {
-    let element = (typeof(el)=='string') ? document.getElementById(el) : el;
-    if(!element) {
+    let element = (typeof(el) === 'string') ? document.getElementById(el) : el;
+    if (!element) {
       console.error('element is not exist.', element);
       element = document.createElement('div');
       document.appendChild(element);
@@ -32,12 +32,12 @@ export default class TextEditor {
   }
 
   // getter
-  get editor(): ace.Ace.Editor { return this._editor;}
+  get editor(): ace.Ace.Editor { return this._editor; }
   get value(): string { return this._editor.getValue(); }
   get line(): string { return this._editor.getSession().getLine(this._editor.getCursorPosition().row); }
   get cursor(): {row: number, column: number} { return this._editor.getSelection().getCursor(); }
   public getLines = (start: number, end?: number) => {
-    if(!end) return this._editor.getSession().getLine(start);
+    if (!end) return this._editor.getSession().getLine(start);
     else return this._editor.getSession().getLines(start, end);
   }
   get opacity(): number { return this._element.style.opacity ? parseFloat(this._element.style.opacity) : -1; }
@@ -105,7 +105,7 @@ export default class TextEditor {
     this._currentPath = path;
 
     fs.readFile(path, (error, text) => {
-      if(error!==null) {
+      if (error !== null) {
         alert('error : ' + error);
         return;
       }
@@ -114,7 +114,7 @@ export default class TextEditor {
   }
   private writeFile = (path: string, data: any) => {
     fs.writeFile(path, data, error => {
-      if(error!==null) {
+      if (error !== null) {
         alert('error : ' + error);
       }
     });

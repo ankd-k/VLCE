@@ -16,7 +16,7 @@ export const GLSLPrimitiveTypes = [
   'mat3',
   'mat4',
 ];
-regexp = regexpPrefix + GLSLPrimitiveTypes.reduce((acc, cur) => acc+'|'+cur) + regexpSuffix;
+regexp = regexpPrefix + GLSLPrimitiveTypes.reduce((acc, cur) => acc + '|' + cur) + regexpSuffix;
 export const GLSLPrimitiveTypesRegExp = new RegExp(regexp, 'g');
 
 export const GLSLBasicSyntax = [
@@ -30,7 +30,7 @@ export const GLSLBasicSyntax = [
   'continue',
   'return',
 ];
-regexp = regexpPrefix + GLSLBasicSyntax.reduce((acc, cur) => acc+'|'+cur) + regexpSuffix;
+regexp = regexpPrefix + GLSLBasicSyntax.reduce((acc, cur) => acc + '|' + cur) + regexpSuffix;
 export const GLSLBasicSyntaxRegExp = new RegExp(regexp, 'g');
 
 export const GLSLQualifier = [
@@ -47,7 +47,7 @@ export const GLSLQualifier = [
   'const',
   'flat',
 ];
-regexp = regexpPrefix + GLSLQualifier.reduce((acc, cur) => acc+'|'+cur) + regexpSuffix;
+regexp = regexpPrefix + GLSLQualifier.reduce((acc, cur) => acc + '|' + cur) + regexpSuffix;
 export const GLSLQualifierRegExp = new RegExp(regexp, 'g');
 
 export const GLSLPreprocessor = [
@@ -58,7 +58,7 @@ export const GLSLPreprocessor = [
   '#endif',
   '#version',
 ];
-regexp = regexpPrefix + GLSLPreprocessor.reduce((acc, cur) => acc+'|'+cur) + regexpSuffix;
+regexp = regexpPrefix + GLSLPreprocessor.reduce((acc, cur) => acc + '|' + cur) + regexpSuffix;
 export const GLSLPreprocessorRegExp = new RegExp(regexp, 'g');
 
 export const GLSLBuiltInVariables = [
@@ -69,7 +69,7 @@ export const GLSLBuiltInVariables = [
   'gl_Position',
   'gl_VertexID',
 ];
-regexp = regexpPrefix + GLSLBuiltInVariables.reduce((acc, cur) => acc+'|'+cur) + regexpSuffix;
+regexp = regexpPrefix + GLSLBuiltInVariables.reduce((acc, cur) => acc + '|' + cur) + regexpSuffix;
 export const GLSLBuiltInVariablesRegExp = new RegExp(regexp, 'g');
 
 export const GLSLFunctions = [
@@ -108,7 +108,7 @@ export const GLSLFunctions = [
   'texture',
   'texture2D',
 ];
-regexp = regexpPrefix + GLSLFunctions.reduce((acc, cur) => acc+'|'+cur) + regexpSuffix;
+regexp = regexpPrefix + GLSLFunctions.reduce((acc, cur) => acc + '|' + cur) + regexpSuffix;
 export const GLSLFunctionsRegExp = new RegExp(regexp, 'g');
 
 regexp = '\\w+\\b(?=\\()';
@@ -121,33 +121,33 @@ export function checkLineSyntax(line: string) {
   let materialIds: number[] = new Array(line.length);
 
   // reset all materialId to 0
-  for(let i=0;i<line.length;i++) {
+  for (let i = 0; i < line.length; i++) {
     materialIds[i] = 0;
   }
 
   let res;
   // set material id.
   //
-  while(res = GLSLQualifierRegExp.exec(line)) {
-    setMaterialId(res, 6);// ex) uniform, attribute, highp, precision, const, ....
+  while (res = GLSLQualifierRegExp.exec(line)) {
+    setMaterialId(res, 6); // ex) uniform, attribute, highp, precision, const, ....
   }
-  while(res = GLSLPreprocessorRegExp.exec(line)) {
-    setMaterialId(res, 2);// ex) #define, ...
+  while (res = GLSLPreprocessorRegExp.exec(line)) {
+    setMaterialId(res, 2); // ex) #define, ...
   }
-  while(res = GLSLBuiltInVariablesRegExp.exec(line)) {
-    setMaterialId(res, 1);// ex) gl_FragColor, ...
+  while (res = GLSLBuiltInVariablesRegExp.exec(line)) {
+    setMaterialId(res, 1); // ex) gl_FragColor, ...
   }
-  while(res = GLSLFunctionsRegExp.exec(line)) {
-    setMaterialId(res, 5);// ex) abs, sin, ...
+  while (res = GLSLFunctionsRegExp.exec(line)) {
+    setMaterialId(res, 5); // ex) abs, sin, ...
   }
-  while(res = GLSLUserFuncitonRegExp.exec(line)) {
-    setMaterialId(res, 5);// ex) ~(
+  while (res = GLSLUserFuncitonRegExp.exec(line)) {
+    setMaterialId(res, 5); // ex) ~(
   }
-  while(res = GLSLPrimitiveTypesRegExp.exec(line)) {
-    setMaterialId(res, 6);// ex) int, float, mat3, ...
+  while (res = GLSLPrimitiveTypesRegExp.exec(line)) {
+    setMaterialId(res, 6); // ex) int, float, mat3, ...
   }
-  while(res = GLSLBasicSyntaxRegExp.exec(line)) {
-    setMaterialId(res, 6);// ex) for, if, switch, ...
+  while (res = GLSLBasicSyntaxRegExp.exec(line)) {
+    setMaterialId(res, 6); // ex) for, if, switch, ...
   }
 
   return materialIds;
@@ -155,7 +155,7 @@ export function checkLineSyntax(line: string) {
   function setMaterialId(res: RegExpExecArray, id: number) {
     const startColumn = res.index;
     const endColumn = res.index + res[0].length;
-    for(let column=startColumn; column<endColumn;column++) {
+    for (let column = startColumn; column < endColumn; column++) {
       materialIds[column] = id;
     }
   }

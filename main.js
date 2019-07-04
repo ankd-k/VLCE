@@ -12,7 +12,6 @@ let clientPort = null;
 let oscServer = null;
 let serverIP = null;
 let serverPort = null;
-// ip, port規定値
 const defaultIP = '127.0.0.1';
 const defaultPort = '9000';
 
@@ -35,15 +34,15 @@ function setup() {
     openWindow();
   });
 
-  app.on('window-all-closed', ()=>{
+  app.on('window-all-closed', () => {
     if(process.platform !== 'darwin'){
       console.log('app window-all-closed event');
       closeWindow();
     }
   });
 
-  app.on('activate', ()=>{
-    if(win===null){
+  app.on('activate', () => {
+    if(win === null){
       openWindow();
     }
   });
@@ -71,11 +70,11 @@ function openWindow() {
 
   win.loadFile('index.html');
 
-  win.on('closed', ()=>{
+  win.on('closed', () => {
     closeWindow();
   });
 
-  if(process.argv.find((arg)=>arg==='--debug')) win.webContents.openDevTools();
+  if(process.argv.find((arg) => arg === '--debug')) win.webContents.openDevTools();
 
   // setup osc
   setupOSC();
@@ -87,16 +86,12 @@ function closeWindow() {
   console.log('close window');
   closeOSC();
 
-  console.log('clear session');
 	electron.session.defaultSession.clearCache(() => { })
 
-  console.log('kill win');
 	if (win != null) {
-    console.log('close win');
 		// win.close();
 		win = null;
 	}
-  console.log('app quit');
 	app.quit();
 }
 
