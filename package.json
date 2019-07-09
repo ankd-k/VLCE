@@ -6,7 +6,7 @@
   "scripts": {
     "build": "webpack",
     "watch": "webpack --watch",
-    "start": "electron ./"
+    "start": "electron ./dist/main.js"
   },
   "dependencies": {
     "ace-builds": "https://github.com/ankd-k/ace-builds.git",
