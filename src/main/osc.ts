@@ -1,4 +1,3 @@
-import { IpcMessageEvent } from 'electron';
 import { Client, Server } from 'node-osc';
 
 export default class OSC {
@@ -14,11 +13,16 @@ export default class OSC {
     // this.createServer();
     // this.createClient();
   }
-
+  public send = (msg: string, ...args: any[]) => {
+    if(this.client) {
+      this.client.send(msg, ...args);
+    }
+  }
   public close = () => {
     this.closeServer();
     this.closeClient();
   }
+
 
   private createServer = (port: number, host: string) => {
     if(this.server) this.closeServer();

@@ -15,7 +15,6 @@ export default class MIDI {
       outputs: [],
     };
     this.request();
-    // console.log('midiDevices ', this.midiDevices);
   }
 
   get inputDevices(): IMIDIDevice[] { return this.midiDevices.inputs; }
@@ -59,6 +58,7 @@ export default class MIDI {
   private requestError = (error?: any) => {
     console.error('MIDIController.request() error.', error);
   }
+
   private inputEvent = (e: any) => {
     console.log('input.', e);
   }
