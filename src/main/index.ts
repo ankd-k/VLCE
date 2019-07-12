@@ -24,7 +24,7 @@ class Main {
       width: 1280,
       height: 720,
       // fullscreen: true,
-      // frame: false,
+      frame: false,
       useContentSize: true,
       webPreferences: {
         nodeIntegration: true,
