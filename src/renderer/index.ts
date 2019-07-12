@@ -1,55 +1,79 @@
 import { ipcRenderer } from 'electron';
 
 import TextEditor from './editor';
-import Renderer from './main-renderer';
+import Scenes from './scenes';
 
 import {
   DEFAULT_FRAGMENT_SHADER,
-} from './main-renderer/shader/constants';
+} from './scenes/shader/constants';
 
-const editor = new TextEditor('editor');
-editor.value = DEFAULT_FRAGMENT_SHADER;
+class Renderer {
+  editor: TextEditor;
+  scenes: Scenes;
 
-const renderer = new Renderer('renderer', editor.value);
-
-window.addEventListener('resize', () => {
-  renderer.resize(window.innerWidth, window.innerHeight);
-});
-
-editor.addCommand([
-  {
-    name: 'load shader',
-    key: {win: 'Ctrl-Enter', mac: 'Command-Enter'},
-    func: () => {
-      console.log('load shader.');
-      renderer.loadShader(editor.value);
-    },
-  },
-  {
-    name: 'toggle 2D editor',
-    key: {win: 'Ctrl-E', mac: 'Command-E'},
-    func: () => {
-      console.log('toggle editor');
-      editor.opacity = editor.opacity===0 ? 1 : 0;
-    }
+  constructor() {
+    this.editor = new TextEditor('editor');
+    this.scenes = new Scenes('scenes', DEFAULT_FRAGMENT_SHADER);
+    this.setup();
+    this.scenes.play();
   }
-]);
 
-editor.addEvent('change', (e: AceAjax.EditorChangeEvent) => {
-  renderer.changeText(e, editor.value);
+  private setup = () => {
+    this.editor.value = DEFAULT_FRAGMENT_SHADER;
+    this.scenes.resize(window.innerWidth, window.innerHeight);
 
-  // osc send
-  // let array: string[] = [];
-  // array.push(editor.value);// , e.action, e.start.row.toString(), e.start.column.toString(), e.end.row.toString(), e.end.column.toString()
-  // ipcRenderer.send('client', array);
+    window.addEventListener('resize', () => {
+      this.scenes.resize(window.innerWidth, window.innerHeight);
+    });
 
-  // midi.send('loopMIDI Port', [0x90, 36, 0x3f]);
-  // const note = 36+Math.random();
-  // midi.send('loopMIDI Port', [0x80, 0x45, 0x3f]);
-});
+    this.editor.addCommand([
+      {
+        name: 'load shader',
+        key: {win: 'Ctrl-Enter', mac: 'Command-Enter'},
+        func: () => {
+          console.log('load shader.');
+          this.scenes.loadShader(this.editor.value);
+        },
+      },
+      {
+        name: 'toggle 2D editor',
+        key: {win: 'Ctrl-E', mac: 'Command-E'},
+        func: () => {
+          console.log('toggle editor');
+          this.editor.opacity = this.editor.opacity===0 ? 1 : 0;
+        }
+      },
+      {
+        name: 'load',
+        key: { win: 'Ctrl-O', mac: 'Command-O' },
+        func: () => {
+          this.editor.load();
+        }
+      },
+      {
+        name: 'save',
+        key: { win: 'Ctrl-S', mac: 'Command-S' },
+        func: () => {
+          this.editor.save();
+        }
+      }
+    ]);
 
-editor.addEvent('move', (e: any) => {
-  renderer.moveCursor(editor.cursor);
-});
+    this.editor.addEvent([
+      {
+        type: 'change',
+        callback: (e: AceAjax.EditorChangeEvent) => {
+          this.scenes.changeText(e, this.editor.value);
+        }
+      },
+      {
+        type: 'move',
+        callback: (e: any) => {
+          this.scenes.moveCursor(this.editor.cursor);
+        }
+      }
+    ]);
+  }
+}
 
-renderer.play();
+const renderer: Renderer = new Renderer();

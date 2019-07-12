@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import TextScene from './text/text-scene';
 import ShaderScene from './shader/shader-scene';
 
-export default class MainRenderer {
+export default class Scenes {
   private _renderer: THREE.WebGLRenderer;
   private _canvas: HTMLCanvasElement;
 
@@ -38,7 +38,7 @@ export default class MainRenderer {
     this._clock = new THREE.Clock();
 
     this._textScene = new TextScene(this._renderer, this._clock, initText); // DEFAULT_FRAGMENT_SHADER
-    this._shaderScene = new ShaderScene(this._renderer, this._clock, initText);
+    this._shaderScene = new ShaderScene(this._renderer, this._clock);
 
     this._targets = [
       new THREE.WebGLRenderTarget(size.x, size.y, {

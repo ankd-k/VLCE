@@ -52,10 +52,6 @@ class TextScene implements IRenderScene {
   }
 
   public render = (target?: THREE.WebGLRenderTarget) => {
-    // CodeMesh._materialList.forEach((m) => {
-    //   m.opacity = m.opacity * 0.99;
-    // });
-
     this._cursor.update();
     this._camera.update()
 
@@ -99,7 +95,6 @@ class TextScene implements IRenderScene {
     this._camera.targetPos = this._cursor.meshPos;
   }
   public moveCursor(pos: AceAjax.Position) {
-    console.log('moveCursor()');
     this._cursor.textPos = pos;
     this._cursor.opacity = 1.0;
     CodeMesh._materialList.forEach((m) => {

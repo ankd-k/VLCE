@@ -1,8 +1,11 @@
 import { app, App, BrowserWindow } from 'electron';
 
+// import Midi from './midi';
+// import Osc from './osc';
+
 class Main {
-  private mainWindow: BrowserWindow | null = null;
   private app: App;
+  private mainWindow: BrowserWindow | null = null;
   private mainURL: string = `file://${__dirname}/index.html`;
 
   constructor(app: App) {

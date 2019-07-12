@@ -1,12 +1,12 @@
-interface IMIDIDevice {
+interface IMidiDevice {
   name: string;
   value: any;
 }
 
-export default class MIDI {
+class Midi {
   private midiDevices: {
-    inputs: IMIDIDevice[],
-    outputs: IMIDIDevice[]
+    inputs: IMidiDevice[],
+    outputs: IMidiDevice[]
   };
 
   constructor() {
@@ -17,8 +17,8 @@ export default class MIDI {
     this.request();
   }
 
-  get inputDevices(): IMIDIDevice[] { return this.midiDevices.inputs; }
-  get outputDevices(): IMIDIDevice[] { return this.midiDevices.outputs; }
+  get inputDevices(): IMidiDevice[] { return this.midiDevices.inputs; }
+  get outputDevices(): IMidiDevice[] { return this.midiDevices.outputs; }
 
   public request() {
     if (navigator.requestMIDIAccess) {
@@ -43,7 +43,7 @@ export default class MIDI {
     // get input devices
     const inputIterator = data.inputs.values();
     for (let input = inputIterator.next(); !input.done; input = inputIterator.next()) {
-      const device = {name: input.value.name, value: input.value};
+      const device = { name: input.value.name, value: input.value };
       this.midiDevices.inputs.push(device);
       device.value.addEventListener('midimessage', this.inputEvent, false);
     }
@@ -63,3 +63,5 @@ export default class MIDI {
     console.log('input.', e);
   }
 }
+
+export default Midi;

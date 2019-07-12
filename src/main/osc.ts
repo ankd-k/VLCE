@@ -1,6 +1,6 @@
 import { Client, Server } from 'node-osc';
 
-export default class OSC {
+class Osc {
 
   private client: Client | null = null;
   private server: Server | null = null;
@@ -51,3 +51,5 @@ export default class OSC {
     }
   }
 }
+
+export default Osc;
