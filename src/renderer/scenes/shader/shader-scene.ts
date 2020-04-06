@@ -8,7 +8,7 @@ import {
   initUniforms,
 } from './constants';
 
-export default class ShaderScene implements IRenderScene{
+class ShaderScene implements IRenderScene{
   private _renderer: THREE.WebGLRenderer;
   _scene: THREE.Scene;
   _camera: THREE.OrthographicCamera;
@@ -71,3 +71,5 @@ export default class ShaderScene implements IRenderScene{
     console.log(this._plane);
   }
 }
+
+export default ShaderScene;

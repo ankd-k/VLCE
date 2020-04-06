@@ -56,7 +56,7 @@ export default class Scenes {
     ];
 
     this._scene = new THREE.Scene();
-    this._camera = new THREE.OrthographicCamera(-1, 1, 1, -1, -1, 15);
+    this._camera = new THREE.OrthographicCamera(-1, 1, 1, -1, -1, 2);
     this._camera.position.z = 1;
 
     const uniforms = {
@@ -77,8 +77,7 @@ export default class Scenes {
       vec2 uv = gl_FragCoord.xy / resolution;
       vec4 sceneA = clamp(texture2D(textScene, uv), 0., 1.);
       vec4 sceneB = clamp(texture2D(shaderScene, uv), 0., 1.);
-      float ratio = normalize(vec2(sceneA.a, sceneB.a)).x;
-      vec4 color = mix(sceneB, sceneA, ratio);
+      vec4 color = sceneA.a>0. ? sceneA : sceneB;
       gl_FragColor = color;
     }`;
     this._plane = new THREE.PlaneBufferGeometry(2, 2);
@@ -101,7 +100,6 @@ export default class Scenes {
     this.animate();
   }
   public resize = (width: number, height: number) => {
-    console.log('resize(): width=', width, ', height=', height);
     this._renderer.setSize(width, height);
 
     this._targets.forEach(target => {

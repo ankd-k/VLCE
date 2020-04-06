@@ -61,5 +61,7 @@ typings/
 .next
 
 # User Settings
-dist/
+# dist/script/
+# dist/*.js
+# dist/*.js.map
 *.xd
