@@ -19,7 +19,7 @@
     "@types/ace": "^0.0.42",
     "@types/fs-extra": "^7.0.0",
     "@types/webmidi": "^2.0.3",
-    "electron": "^5.0.1",
+    "electron": "^18.3.7",
     "electron-builder": "^20.44.4",
     "imports-loader": "^0.8.0",
     "ts-loader": "^6.0.0",
